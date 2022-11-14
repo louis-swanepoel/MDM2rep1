@@ -1,0 +1,35 @@
+[X,Y] = meshgrid(-10:0.5:10,-10:0.5:10);
+% Create Variable T associated with each point in cartesian space
+Tsize = X; % Correct dimensions to agree with the space
+T_0 = 0.*Tsize; % Zeros 
+T_1 = T_0+1; % ones
+T = @(t) T_1.*t; % function to determine the time as 
+
+% particle position as a function of time
+X_t = @(t) (T(t)) ;
+Y_t = @(t) (transpose(T(t)));
+
+% position from the particle as a function of time
+R = @(t) sqrt((X-X_t(t)).^2+(Y-Y_t(t)).^2);
+
+% Frequency of the sound 
+omega = 2;
+
+% Attenuation factor; decreasing as time goes on and increasing as you get further away
+% from the particle
+alpha = @(t) 10.*1./(R(t).^2);       
+beta = @(t) exp(0.5.*R(t));
+
+% FUNCTION for the excitation of the medium R radially from the particle
+Z = @(t) if R(t) == t:
+            cos(omega.*R(t)) ;
+         else
+
+% Summation of all the states of the material
+
+
+surface(X,Y,Z(1))
+
+colorbar
+view(3)
+
