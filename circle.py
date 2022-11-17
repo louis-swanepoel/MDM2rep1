@@ -5,7 +5,7 @@ Created on Mon Nov 14 16:55:03 2022
 
 @author: huw
 """
-
+from numpy import linspace as linspace
 def Circle(t,v,x0,y0,x):
     
     bigy=(t*v)**2 - (x-x0)**2
