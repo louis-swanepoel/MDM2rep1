@@ -37,3 +37,9 @@ circle2=Circle(t-1,v,SecondPositionX,SecondPositionY,givenpoint)
 
 print(CircleOutput(circle1))
 print(CircleOutput(circle2))
+
+T=(linspace(0,10,11))
+for t in T:
+    NewPositionX=StartingPositionX+t*v
+    NewPositionY=StartingPositionY+t*v
+    print(CircleOutput((Circle(t,v,NewPositionX,NewPositionY,givenpoint))))
