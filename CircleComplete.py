@@ -45,7 +45,7 @@ def COMPILE(range1,range2):
 
 Time=5
 Frequency=2
-TimeRange=linspace(1,Time,Frequency*Time)
+TimeRange=linspace(Time/(Frequency*Time),Time,Frequency*Time)
 SpeedOfSound=1
 StartingPoint=array([0,0])
 XRange=(linspace(0,5,1000))
