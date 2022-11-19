@@ -31,4 +31,4 @@ plt.title("CIRCLE")
 plt.xlabel("x") 
 plt.ylabel("y") 
 plt.plot(X,YRange) 
-plt.show()
+plt.show()       #plot comes out a bit  funky at the end but i think its due x intervals
