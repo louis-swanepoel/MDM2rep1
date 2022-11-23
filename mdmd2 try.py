@@ -125,26 +125,30 @@ w= 2*math.pi*f
 
 
 for j in range(len(area[0])):
+    yM = j * dist
     for k in range(len(area[0][0])):  
+        xM = k * dist
         for i in range(stepNumber + 1):
             #set xM and yM based on current place measured * dist
-            xM = k * dist
-            yM = j * dist
             tM = i * timeStep
             tMList.append(tM)
             def equations(p):
                 x, y = p
                 return (x+y-tM, x-((((xEM*y+xEB)-xM)**2+((yEM*y+yEB)-yM)**2)**.5)/340)
             tR, tE=  fsolve(equations, ((i*timeStep/2), (i*timeStep/2)))
-            tEList.append(tE)
-            #set r based on formula for x=t, y=t, measured fro (0,0)
-            r = ((tE-xM)**2+(tE-yM)**2)**.5
-            #x = setX(tE)
-            #y = setY(tE)
-            if(r==0):
-                area[i][j][k] = (math.sin(w*tE))
-            else:
-                area[i][j][k] = (math.sin(w*tE)/(r**2))
+            if(tE>=0):
+                tEList.append(tE)
+                #set r based on formula for x=t, y=t, measured fro (0,0)
+                r = ((tE-xM)**2+(tE-yM)**2)**.5
+                #x = setX(tE)
+                #y = setY(tE)
+                #crete a variable for the distance from origin to measured point
+                rOM = ((xEM-xM)**2+(yEM-yM)**2)**.5
+                #create a variable for the farthest 
+                if(r==0):
+                    area[i][j][k] = (math.sin(w*tE))
+                else:
+                    area[i][j][k] = (math.sin(w*tE)/(r**2))
 
 print(tEList)
 printArea()
