@@ -81,7 +81,7 @@ for i in range(stepNumber + 1):
     if(r==0):
         pressure.append(math.sin(w*tE))
     else:
-        pressure.append((1/r)*math.sin(w*tE))
+        pressure.append((1/(r**2))*math.sin(w*tE))
     
     
 print("Given a sound wave of frequency ", f, "moving with an equation of x=t, y=t over a time period of", timePeriod, "seconds, measured every", timeStep, "seconds:")
