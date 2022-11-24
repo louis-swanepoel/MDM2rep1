@@ -7,7 +7,11 @@ Created on Mon Nov 14 19:55:03 2022
 
 import math
 from scipy.optimize import fsolve
-import sympy
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw 
+import numpy as np
+import array as arr
 
 #define a function for printing the matrix
 def printArea():
@@ -109,17 +113,24 @@ f = getFrequency()
 stepNumber = math.floor(timePeriod/timeStep)
 
 #create an empty 2d matrix with given dimensions 
+
 areaWidth, areaHeight = getAreaLayout()
 area = [0] *(stepNumber+1)
+#areaBW = [0] *(stepNumber+1)
 for i in range(stepNumber+1):
     area[i] = [0] * areaHeight
+    #areaBW[i] = [0] * areaHeight
     for j in range(areaHeight):
         area[i][j] = [0] * areaWidth
+        #areaBW[i][j] = [0] * areaWidth
+        
+areaBW = np.zeros((areaHeight,areaWidth))
+
+
 
 dist = getAreaDist()
 xEM,xEB,yEM,yEB = getXY()
 
-printArea()
 
 w= 2*math.pi*f
 
@@ -149,7 +160,25 @@ for j in range(len(area[0])):
                     area[i][j][k] = (math.sin(w*tE))
                 else:
                     area[i][j][k] = (math.sin(w*tE)/(r**2))
+                    
 
-print(tEList)
+
+
 printArea()
-
+"""
+yN = input("Would you like to make any of the time slots into an image (enter y for yes).")
+if(yN=='y'):
+    step = int(input("Which step would you like to use (start at 1)"))
+    for i in range(len(area[step])):
+        for j in range(len(area[step][i])):
+            bV = area[step][i][j]
+            if(bV<1):
+                bv=1
+            elif(bV<-1):
+                bV = 1
+            areaBW[i][j] = int(round(127.5*(bV+1)))
+    print(areaBW)
+            
+    newImg = Image.fromarray(areaBW)
+    newImg.save('newImg.png')
+    """
