@@ -6,7 +6,8 @@ Created on Wed Nov 23 16:28:23 2022
 @author: huw
 """
 
-from numpy import sin,cos,linspace,arccos,arcsin,pi,array,transpose
+from math import floor
+from numpy import sin,cos,linspace,pi,array
 from matplotlib import pyplot as plt
 
 def Plot(x,y):
@@ -47,11 +48,13 @@ def CircularCircle(TotalTime,TimeRange,StartingPoint,XRange,RadiusOfCircle,Speed
         Y1=CircleGenerator(TotalTime,t,SpeedOfSound,StartingPoint,XRange)
         Y0=COMPILE(Y0,Y1)
     Plot(XRange,Y0)
+
+
 XRange=linspace(-150,150,5000)
 SpeedOfSound=5
 RadiusOfCircle=10
-TotalTime=1
-Frequency=90
-TimeRange=linspace(0,10,Frequency*TotalTime)
+TotalTime=4*pi
+Frequency=10
+TimeRange=linspace(1/Frequency,TotalTime,floor(Frequency*TotalTime))
 StartingPoint=array([0,0])
 CircularCircle(TotalTime,TimeRange,StartingPoint,XRange,RadiusOfCircle,SpeedOfSound)
