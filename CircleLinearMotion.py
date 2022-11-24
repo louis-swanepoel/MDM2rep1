@@ -42,7 +42,7 @@ def COMPILE(range1,range2):
 def StraightLine(TotalTime,TimeRange,StartingPoint,XRange,InitialSpeedOfParticle,AccelerationOfParticle,SpeedOfSound):
     Y0=CircleGenerator(TotalTime,0,SpeedOfSound,StartingPoint,XRange)
     for t in TimeRange:
-        StartingPoint=InitialSpeedOfParticle*t+0.5*AccelerationOfParticle*t*2
+        StartingPoint=InitialSpeedOfParticle*t+0.5*AccelerationOfParticle*t**2
         Y1=CircleGenerator(TotalTime,t,SpeedOfSound,StartingPoint,XRange)
         Y0=COMPILE(Y0,Y1)
     
