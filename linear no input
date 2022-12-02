@@ -6,13 +6,12 @@ Created on Mon Nov 14 19:55:03 2022
 """
 import math
 from scipy.optimize import fsolve
-from PIL import Image
+from PIL import Image#, ImageDraw
 import numpy as np
 from pathlib import Path
 
-
-
-data_folder = Path("C:/Users/ashru/Desktop")
+#Change data folder to wherever on your 
+data_folder = "C:/Users/ashru/Desktop"
 
 #define a function for printing the matrix
 def printArea():
@@ -96,29 +95,30 @@ def getXY():
     return xEM, xEB, yEM, yEB
 """
 
+SPEEDOFSOUND = 343.2
+
 #define variables for x measured, y measured 
 xM = int()
 yM = int()
 
 #define a variable for time emitted, time measured, and retarded time
 tE = float()
-tEList = []
 tMList = []
 tR = float() 
 tM= 0
 pressure = []
 
 
-timePeriod, timeStep = 7, .5
-f = 30
+timePeriod, timeStep = .5,.025
+f = 100
 stepNumber = math.floor(timePeriod/timeStep)
 
 #create an empty 2d matrix with given dimensions 
 
-areaWidth, areaHeight = 750, 750
-area = [0] *(stepNumber+1)
+areaWidth, areaHeight = 800, 600
+area = [0] *(stepNumber)
 #areaBW = [0] *(stepNumber+1)
-for i in range(stepNumber+1):
+for i in range(stepNumber):
     area[i] = [0] * areaHeight
     #areaBW[i] = [0] * areaHeight
     for j in range(areaHeight):
@@ -129,65 +129,90 @@ areaBW = np.zeros((areaHeight,areaWidth))
 
 
 
-dist = .55
-xEM,xEB,yEM,yEB = 225, -400, 0, 250
+dist = .1
+xEM, xEB, yEM, yEB = 0, 0, 0, -0
+yEM, yEB= yEM * -1, yEB * -1
 
+totalWidthDistHalf = dist*areaWidth/2
+totalHeightDistHalf = dist*areaHeight/2
 
 w= 2*math.pi*f
 
 
 for j in range(len(area[0])):
-    yM = j * dist
+    yM = j * dist - totalHeightDistHalf
     for k in range(len(area[0][0])):  
-        xM = k * dist
-        for i in range(stepNumber + 1):
+        xM = k * dist - totalWidthDistHalf
+        for i in range(stepNumber):
             #set xM and yM based on current place measured * dist
-            tM = i * timeStep
+            tM = (i+1) * timeStep 
             tMList.append(tM)
             def equations(p):
                 x, y = p
-                return (x+y-tM, x-((((xEM*y+xEB)-xM)**2+((yEM*y+yEB)-yM)**2)**.5)/340)
+                return (x+y-tM, x-((((xEM*y+xEB)-xM)**2+((yEM*y+yEB)-yM)**2)**.5)/340,)
                 #return (x+y-tM, x-((((xEM*y+xEB)-xM)**2+((yEM*y+yEB)-yM)**2)**.5)/340)
-            tR, tE=  fsolve(equations, ((i*timeStep/2), (i*timeStep/2)))
-            if(tE>=0):
-                tEList.append(tE)
-                #set r based on formula for x=t, y=t, measured fro (0,0)
-                r = ((tE-xM)**2+(tE-yM)**2)**.5
-                #x = setX(tE)
-                #y = setY(tE)
-                #create a variable for the farthest 
-                """
-                if(r==0):
+            tR, tE=  fsolve(equations, ((tM/2), (tM/2)))
+            if (tE>=0 and tE<= tM):
+                if(np.isreal(tR)):
+                    
+                    """
+                    #x = setX(tE)
+                    #y = setY(tE)
+                    #create a variable for the farthest 
+                    
+                    #set r based on formula for x=t, y=t, measured fro (0,0)
+                    r = ((xEM*tE+xEB-xM)**2+(yEM*tE+xEB-yM)**2)**.5
+                    if(r==0):
+                        area[i][j][k] = (math.sin(w*tE))
+                    else:
+                        area[i][j][k] = (math.sin(w*tE))/math.log(r)
+                    """
                     area[i][j][k] = (math.sin(w*tE))
-                else:
-                    area[i][j][k] = (math.sin(w*tE)/(r**2))
-                """
-                area[i][j][k] = (math.sin(w*tE))
+                    
+print('equations done')
+"""
+emissions = []
+for i in range(round(stepNumber*f*timeStep)):
+    emissionTime = i*timeStep
+    emissionX = round((xEM*emissionTime+xEB)/dist)
+    emissionY = round((yEM*emissionTime+yEB)/dist)
+    emissions.append([emissionTime,emissionX,emissionY])
+print(emissions)
+"""
 
+imgData = str(timePeriod) + ',' + str(timeStep) + ',' + str(f) + ',' + str(areaHeight) + ',' + str(areaWidth) + ',' + str(dist) + ',' +  str(xEM) + ',' + str(xEB) + ',' + str(yEM) + ',' + str(yEB)
+dataFolder = Path("C:/Users/ashru/Desktop/"+imgData)
+p = dataFolder.mkdir(parents=True, exist_ok=True)
+#yN = input("Would you like to make any of the time slots into an image (enter y for yes).")
+#if(yN=='y'):im
+#step = int(input("Which step would you like to use (start at 1)"))-1
+for k in range(len(area)):
+    for i in range(len(area[k])):
+        for j in range(len(area[k][i])):
+            bV = area[k][i][j]
+            if(bV>1):
+                bv=1
+            elif(bV<-1):
+                bV = -1
+            areaBW[i][j] = int(round(127.5*(bV+1)))
+    areaBW = areaBW.astype('i')
+    newImg = Image.fromarray(np.uint8(areaBW))
 
+    name = "C:/Users/ashru/Desktop/"+imgData+ '/'+ imgData + ',' + str(k) +".png"
+    #name1 = "C:/Users/ashru/Desktop/"+imgData+ '/Circle'+ imgData + ',' + str(k) +".png"
+    newImg.save(name)
+    """
+    newImg1 = ImageDraw.Draw(Image.open(name))
+    l = 0
+    for l in range(len(emissions)):
+        if(emissions[l][0]<=(k+1)*timeStep):
+            print(l,i+k-l)
+            emissionR = SPEEDOFSOUND *(emissions[l][0])-l*timeStep
+            newImg1.ellipse([(10,10),(50,50)],fill=None,outline = 'cyan', width = 3)
 
-printArea()
-images= []
-
-yN = input("Would you like to make any of the time slots into an image (enter y for yes).")
-if(yN=='y'):
-    #step = int(input("Which step would you like to use (start at 1)"))-1
-    for k in range(len(area)):
-        for i in range(len(area[k])):
-            for j in range(len(area[k][i])):
-                bV = area[k][i][j]
-                if(bV>1):
-                    bv=1
-                elif(bV<-1):
-                    bV = -1
-                areaBW[i][j] = int(round(127.5*(bV+1)))
-        areaBW = areaBW.astype('i')
-        print(areaBW)
-        newImg = Image.fromarray(np.uint8(areaBW))
-        name = "C:/Users/ashru/Desktop/newImg"+str(k)+".png"
-        newImg.save(name)
-        #images.append(newImg)
-#images2gif.writeGif("C:/Users/ashru/Desktop/images.gif",images,duration=0.3,dither=0)
-#images[0].save('images.gif',save_all=True, append_images=images[1:], optimize=False, duration=40, loop=0)
-#print(images)
-    
+            #newImg1.ellipse([(emissions[l][1]-round(emissionR/(dist*(2)**.5)),emissions[l][2]-round(emissionR/(dist*(2)**.5))),(emissions[l][1]+round(emissionR/(dist*(2)**.5)),emissions[l][2]+round(emissionR/(dist*(2)**.5)))],fill=None,outline = 'red', width = 2)
+        else:
+            break
+    newImg.save(name1)
+    """
+print('done')
