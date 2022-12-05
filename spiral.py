@@ -106,7 +106,7 @@ for i in range(numCircles):
         c = plt.Circle((xAmplitude*math.sin(xOmega*circTime+xOffset),yAmplitude*math.sin(yOmega*circTime+yOffset)), radius =(SPEEDOFSOUND*(timeStep*stepNumber-circTime)), fill = False)
     plt.gca().add_artist(c)
 print(circlesList)
-imgData = str(timePeriod) + ',' + str(timeStep) + ',' + str(f) + ',' + str(areaHeight) + ',' + str(areaWidth) + ',' + str(dist) + ',' +  str(xAmplitude) + ',' + str(xOmega)+','+str(xOffset) + ','+str(yAmplitude) +','+ str(yOmega) + ',' + str(yOffset)+'circ'
+imgData = str(timePeriod) + ',' + str(timeStep) + ',' + str(f) + ',' + str(areaHeight) + ',' + str(areaWidth) + ',' + str(dist) + ',' +  str(xAmplitude) + ',' + str(xOmega)+','+str(xOffset) + ','+str(yAmplitude) +','+ str(yOmega) + ',' + str(yOffset)+'spiral'
 dataFolder = Path("C:/Users/ashru/Desktop/"+imgData)
 p = dataFolder.mkdir(parents=True, exist_ok=True)
 plt.savefig("C:/Users/ashru/Desktop/"+imgData+ '/'+imgData +",Wavefront.png",dpi=100)
